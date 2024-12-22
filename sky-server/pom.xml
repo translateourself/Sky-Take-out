@@ -81,6 +81,7 @@
             <artifactId>aspectjweaver</artifactId>
         </dependency>
 
+<!--        集成swagger 生成api解决方案-->
         <dependency>
             <groupId>com.github.xiaoymin</groupId>
             <artifactId>knife4j-spring-boot-starter</artifactId>

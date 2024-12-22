@@ -1,7 +1,11 @@
 package com.sky.service.impl;
 
+import com.alibaba.druid.support.spring.stat.annotation.Stat;
 import com.sky.constant.MessageConstant;
+import com.sky.constant.PasswordConstant;
 import com.sky.constant.StatusConstant;
+import com.sky.context.BaseContext;
+import com.sky.dto.EmployeeDTO;
 import com.sky.dto.EmployeeLoginDTO;
 import com.sky.entity.Employee;
 import com.sky.exception.AccountLockedException;
@@ -9,9 +13,12 @@ import com.sky.exception.AccountNotFoundException;
 import com.sky.exception.PasswordErrorException;
 import com.sky.mapper.EmployeeMapper;
 import com.sky.service.EmployeeService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
+
+import java.time.LocalDateTime;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -39,12 +46,13 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
 
         //密码比对
-        // TODO 后期需要进行md5加密，然后再进行比对
-        if (!password.equals(employee.getPassword())) {
+        // encrypt the front pass password then check out with user secret.
+        String userPassWord = DigestUtils.md5DigestAsHex(password.getBytes());
+
+        if (!userPassWord.equals(employee.getPassword())) {
             //密码错误
             throw new PasswordErrorException(MessageConstant.PASSWORD_ERROR);
         }
-
         if (employee.getStatus() == StatusConstant.DISABLE) {
             //账号被锁定
             throw new AccountLockedException(MessageConstant.ACCOUNT_LOCKED);
@@ -52,6 +60,42 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         //3、返回实体对象
         return employee;
+    }
+    /*
+     * function create a new employee
+     *
+     * @date 2024/12/22 21:43
+     * @param employeeDTO
+     */
+    @Override
+    public void save(EmployeeDTO employeeDTO) {
+        Employee employee = new Employee();
+        //copy object's property from employeeDto to employee
+        BeanUtils.copyProperties(employeeDTO,employee);
+
+        // the rest of property in employee could be set in manual
+        employee.setStatus(StatusConstant.ENABLE);
+
+        employee.setPassword(DigestUtils.md5DigestAsHex(PasswordConstant.DEFAULT_PASSWORD.getBytes()));
+
+        employee.setCreateTime(LocalDateTime.now());
+
+        employee.setUpdateTime(LocalDateTime.now());
+
+
+        // get employeeId by threadLocal
+
+        employee.setCreateUser(BaseContext.getCurrentId());
+
+        employee.setUpdateUser(BaseContext.getCurrentId());
+
+        System.out.println("current thread id serviceImplement:"+Thread.currentThread().getId());
+        employeeMapper.insert(employee);
+
+
+
+
+
     }
 
 }
