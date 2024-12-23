@@ -104,7 +104,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     /*
-     * function:page query just using sql limit
+     * function:page query use PageHelper
      *
      * @date 2024/12/23 17:49
      * @param employeePageQueryDTO
@@ -113,10 +113,15 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public PageResult pageQuery(EmployeePageQueryDTO employeePageQueryDTO) {
         // sql: select * from employee limit 0,10
-        String employName = employeePageQueryDTO.getName();
-        int offset = (employeePageQueryDTO.getPage() - 1) * employeePageQueryDTO.getPageSize();
-        List<Employee> pageList = employeeMapper.pageQuery(employName, employeePageQueryDTO.getPage(), offset);
-        return new PageResult(pageList.size(), pageList);
+//        String employName = employeePageQueryDTO.getName();
+//        int offset = (employeePageQueryDTO.getPage() - 1) * employeePageQueryDTO.getPageSize();
+//        List<Employee> pageList = employeeMapper.pageQuery(employName, employeePageQueryDTO.getPage(), offset);
+//        return new PageResult(pageList.size(), pageList);
+        PageHelper.startPage(employeePageQueryDTO.getPage(),employeePageQueryDTO.getPageSize());
+
+        Page<Employee> page = employeeMapper.pageQuery(employeePageQueryDTO);
+        return new PageResult(page.getTotal(),page.getResult());
+
     }
 
 }
