@@ -16,6 +16,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.yaml.snakeyaml.events.Event;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -100,6 +101,31 @@ public class EmployeeController {
         log.info("Employee Page Query :{}", employeePageQueryDTO);
         PageResult pageResult = employeeService.pageQuery(employeePageQueryDTO);
         return Result.success(pageResult);
+    }
+
+    @PostMapping("/status/{status}")
+    @ApiOperation("update employee account status ")
+    public Result updateEmployeeStatue(@PathVariable Integer status, Long id) {
+        log.info("start/stop employee account");
+        employeeService.startOrStop(id,status);
+        return Result.success();
+    }
+
+    //in order to preset the property when open update html
+    @GetMapping("/{id}")
+    @ApiOperation("get employee by id")
+    public Result<Employee> getEmployeeByID(@PathVariable Long id) {
+        Employee employee = employeeService.getEmployeeById(id);
+        return Result.success(employee);
+
+    }
+
+    // update employee information
+    @PutMapping
+    @ApiOperation("updateEmployeeInfo")
+    public  Result updateEmployInfo(@RequestBody EmployeeDTO employeeDTO){
+        employeeService.updateInfo(employeeDTO);
+        return Result.success();
     }
 
 }

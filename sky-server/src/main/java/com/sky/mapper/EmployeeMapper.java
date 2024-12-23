@@ -31,4 +31,17 @@ public interface EmployeeMapper {
 
    //  user PageHelper
     Page<Employee> pageQuery(EmployeePageQueryDTO employeePageQueryDTO);
+
+    //update employee
+    /*
+     * function : creating employee use new property then update database according new object.
+     *
+     * @date 2024/12/23 21:21
+     * @param updateEmployee
+     */
+    void update(Employee updateEmployee);
+
+    // get Employee by id
+    @Select("select * from employee where id = #{id}")
+    Employee getEmployeeById(Long id);
 }

@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
+import javax.jnlp.BasicService;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -122,6 +123,30 @@ public class EmployeeServiceImpl implements EmployeeService {
         Page<Employee> page = employeeMapper.pageQuery(employeePageQueryDTO);
         return new PageResult(page.getTotal(),page.getResult());
 
+    }
+
+    @Override
+    public void startOrStop(Long id, Integer status) {
+        Employee updateEmployee = Employee.builder()
+                                    .status(status)
+                                    .id(id)
+                                    .build();
+        employeeMapper.update(updateEmployee);
+    }
+
+    @Override
+    public Employee getEmployeeById(Long id) {
+        return employeeMapper.getEmployeeById(id);
+
+    }
+
+    @Override
+    public void updateInfo(EmployeeDTO employeeDTO) {
+        Employee employee = new Employee();
+        BeanUtils.copyProperties(employeeDTO,employee);
+        employee.setUpdateTime(LocalDateTime.now());
+        employee.setUpdateUser(BaseContext.getCurrentId());
+        employeeMapper.update(employee);
     }
 
 }

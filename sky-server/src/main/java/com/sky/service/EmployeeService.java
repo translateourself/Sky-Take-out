@@ -22,5 +22,25 @@ public interface EmployeeService {
      */
     public void save (EmployeeDTO employeeDTO);
 
+    /*
+     * function page query
+     *
+     * @date 2024/12/23 21:01
+     * @param employeePageQueryDTO
+     * @return com.sky.result.PageResult
+     */
     PageResult pageQuery(EmployeePageQueryDTO employeePageQueryDTO);
+
+    /*
+     * function stop or start employee account.
+     *
+     * @date 2024/12/23 21:01
+     * @param id
+     * @param status
+     */
+    void startOrStop(Long id, Integer status);
+
+    Employee getEmployeeById(Long id);
+
+    void updateInfo(EmployeeDTO employeeDTO);
 }
