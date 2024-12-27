@@ -13,4 +13,5 @@ import java.util.List;
 public interface SetMealDishMapper {
     // select  id from setmeal_dish where dish id in (1,2,3,4)
     List<Long> getSetMealDishByDishId(List<Long> dishIds);
+
 }

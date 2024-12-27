@@ -11,6 +11,8 @@ import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
+import java.util.List;
+
 @Mapper
 public interface DishMapper {
 
@@ -33,4 +35,13 @@ public interface DishMapper {
 
     @Delete("delete from dish where id = #{id}")
     void deleteDishById(Long id);
+
+    /*
+     * function : batch delete dish according to Dish
+     *
+     * @date 2024/12/27 21:56
+     * @param ids
+     * sql:delete  from dish where id in (1,2,3)
+     */
+    void deleteDishByIds(List<Long> ids);
 }
