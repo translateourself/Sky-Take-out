@@ -44,4 +44,13 @@ public interface DishMapper {
      * sql:delete  from dish where id in (1,2,3)
      */
     void deleteDishByIds(List<Long> ids);
+
+    /*
+     * function dynamic modify dish
+     *
+     * @date 2024/12/28 17:08
+     * @param dish
+     */
+    @AutoFill(OperationType.UPDATE)
+    void updateDish(Dish dish);
 }

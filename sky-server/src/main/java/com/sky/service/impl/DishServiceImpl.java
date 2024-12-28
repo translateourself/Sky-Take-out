@@ -110,4 +110,44 @@ public class DishServiceImpl implements DishService {
         //sql: delete from dish_flavor where dish_id in (1,2,3,4)
         flavorMapper.deleteFlavorByIds(ids);
     }
+
+    @Override
+    public DishVO queryDishWithFlavor(Long id) {
+        // query dish according to id in dish table
+        Dish dish = dishMapper.queryById(id);
+
+        // query flavor according to dish_id in dish_flavor table
+        List<DishFlavor> flavors = flavorMapper.queryByDishId(id);
+
+        //  encapsulate data to result type
+        DishVO resultVo = new DishVO();
+        BeanUtils.copyProperties(dish,resultVo);
+        resultVo.setFlavors(flavors);
+        return resultVo;
+    }
+
+    @Override
+    public void updateDishWithFlavor(DishDTO dishDTO) {
+        //1.  update dish
+        Dish dish = new Dish();
+        BeanUtils.copyProperties(dishDTO,dish);
+        dishMapper.updateDish(dish);
+        //2. update flavor:  delete current flavor then insert new flavor
+
+        flavorMapper.deleteFlavorById(dishDTO.getId());
+
+        // get insert sql generated Id
+        Long dishId = dish.getId();
+
+        //  insert many flavor data into flavor table
+
+        List<DishFlavor> flavors = dishDTO.getFlavors();
+
+        if (flavors != null && !flavors.isEmpty()) {
+            flavors.forEach(dishFlavor -> {
+                dishFlavor.setDishId(dishId);
+            });
+            flavorMapper.insertBatch(flavors);
+        }
+    }
 }
