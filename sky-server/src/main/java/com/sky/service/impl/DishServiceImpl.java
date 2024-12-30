@@ -175,4 +175,9 @@ public class DishServiceImpl implements DishService {
 
         return dishVOList;
     }
+
+    @Override
+    public void onOff(Long id) {
+        dishMapper.onOff(id);
+    }
 }

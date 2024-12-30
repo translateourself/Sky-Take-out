@@ -10,6 +10,7 @@ import com.sky.vo.DishVO;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -64,4 +65,6 @@ public interface DishMapper {
     List<Dish> getBySetmealId(Long id);
 
 
+    @Update("update dish set status = IF(status = 0, 1, 0) where id = #{id}")
+    void onOff(Long id);
 }

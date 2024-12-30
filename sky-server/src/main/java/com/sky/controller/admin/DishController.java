@@ -1,7 +1,5 @@
 package com.sky.controller.admin;
 
-import com.github.pagehelper.Page;
-import com.google.j2objc.annotations.AutoreleasePool;
 import com.sky.dto.DishDTO;
 import com.sky.dto.DishPageQueryDTO;
 import com.sky.result.PageResult;
@@ -11,12 +9,13 @@ import com.sky.service.impl.DishServiceImpl;
 import com.sky.vo.DishVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.v3.oas.annotations.Parameter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author xuxunne
@@ -33,12 +32,18 @@ public class DishController {
     DishService dishService;
     @Autowired
     private DishServiceImpl dishServiceImpl;
+    @Autowired
+    RedisTemplate redisTemplate;
 
     @PostMapping
     @ApiOperation("Increasing Dish")
     public Result save(@RequestBody DishDTO dishDTO) {
         log.info("Start increasing Dish");
         dishService.saveWithFlavor(dishDTO);
+
+        String dishKey = "dish_" + dishDTO.getId();
+        cleanCache(dishKey);
+
         return Result.success();
     }
 
@@ -69,6 +74,8 @@ public class DishController {
     public Result delete(@RequestParam List<Long> ids) {
         log.info("Batch Delete Dish :{}",ids);
         dishService.deleteBatch(ids);
+
+        cleanCache("dish_*");
         return Result.success();
     }
 
@@ -92,7 +99,29 @@ public class DishController {
     public Result updateDishWithFlavor(@RequestBody DishDTO dishDTO) {
         log.info("modify info:{}",dishDTO);
         dishService.updateDishWithFlavor(dishDTO);
+        cleanCache("dish_*");
         return Result.success();
+    }
+
+    /**
+     * 根据id修改起售停售状态
+     * @param id
+     * @return
+     */
+    @PostMapping("/status/{status}")
+    public Result onOff(@PathVariable Integer status,Long id){
+        log.info("根据id修改状态，{}", id);
+        dishService.onOff(id);
+        // 将所有的菜品缓存数据清理掉，所有以dish_开头的key
+        cleanCache("dish_*");
+        return Result.success();
+    }
+
+    // clean up the cache
+    private void cleanCache(String pattern){
+        // query all key which the prefix is patter
+        Set keys = redisTemplate.keys(pattern);
+        redisTemplate.delete(keys);
     }
 
 }

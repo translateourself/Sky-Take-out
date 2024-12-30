@@ -63,4 +63,12 @@ public interface DishService {
      * @return
      */
     List<DishVO> listWithFlavor(Dish dish);
+
+    /*
+     * function
+     *
+     * @date 2024/12/30 17:27
+ * @param id
+     */
+    void onOff(Long id);
 }
