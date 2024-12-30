@@ -23,7 +23,7 @@ import java.util.List;
  * @description:
  * @since 2024/12/27 16:51
  */
-@RestController
+@RestController("adminDishController")
 @RequestMapping("/admin/dish")
 @Api(tags = "Dish relate interface")
 @Slf4j
