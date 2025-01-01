@@ -337,17 +337,17 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     public OrderStatisticsVO statistics() {
-//        根据状态，分别查询出接待单，待派送、派送中的订单数量
+        // 根据状态，分别查询出接待单，待派送、派送中的订单数量
         Integer toBeConfirmed = orderMapper.countStatus(Orders.TO_BE_CONFIRMED);
         Integer confirmed = orderMapper.countStatus(Orders.CONFIRMED);
         Integer deliveryInProgress = orderMapper.countStatus(Orders.DELIVERY_IN_PROGRESS);
-
-//        将查询出的数据封装
+    
+        // 将查询出的数据封装
         OrderStatisticsVO orderStatisticsVO = new OrderStatisticsVO();
         orderStatisticsVO.setToBeConfirmed(toBeConfirmed);
         orderStatisticsVO.setConfirmed(confirmed);
         orderStatisticsVO.setDeliveryInProgress(deliveryInProgress);
-
+    
         return orderStatisticsVO;
     }
 
@@ -516,6 +516,6 @@ public class OrderServiceImpl implements OrderService {
 //        将该订单对应的所有菜品信息拼接在一起
         return String.join("", ordewrDishList);
     }
-
+    
 
 }

@@ -17,6 +17,7 @@
         </where>
     </select>
 
+
     <update id="update" parameterType="addressBook">
         update address_book
         <set>
