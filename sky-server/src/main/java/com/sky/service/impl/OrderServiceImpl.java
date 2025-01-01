@@ -288,12 +288,12 @@ public class OrderServiceImpl implements OrderService {
 
         // 订单处于待接单状态下取消，需要进行退款
         if (ordersDB.getStatus().equals(Orders.TO_BE_CONFIRMED)) {
-            //调用微信支付退款接口
-            weChatPayUtil.refund(
-                    ordersDB.getNumber(), //商户订单号
-                    ordersDB.getNumber(), //商户退款单号
-                    new BigDecimal(0.01),//退款金额，单位 元
-                    new BigDecimal(0.01));//原订单金额
+//            //调用微信支付退款接口
+//            weChatPayUtil.refund(
+//                    ordersDB.getNumber(), //商户订单号
+//                    ordersDB.getNumber(), //商户退款单号
+//                    new BigDecimal(0.01),//退款金额，单位 元
+//                    new BigDecimal(0.01));//原订单金额
 
             //支付状态修改为 退款
             orders.setPayStatus(Orders.REFUND);
@@ -497,6 +497,26 @@ public class OrderServiceImpl implements OrderService {
 
         orderMapper.update(orders);
     }
+
+    /*
+     * function : user reminder order
+     *
+     * @date 2025/1/1 20:37
+     * @param id
+     */
+    public void reminder(Long id) {
+        Orders order = orderMapper.getById(id);
+        if ( order == null ) {
+            throw new OrderBusinessException(MessageConstant.ORDER_NOT_FOUND);
+        }
+        Map map = new HashMap<>();
+        map.put("type", 2); //convent : 1:  remind a order coming 2: urgent order
+        map.put("orderId", order.getId());
+        map.put("content", "订单号:" + order.getNumber());
+        String message = JSONObject.toJSONString(map);
+        webSocketServer.sendToAllClient(message);
+    }
+
 
     /**
      * 部分订单状态，需要额外返回订单菜品信息，将orders转化为orderVo
