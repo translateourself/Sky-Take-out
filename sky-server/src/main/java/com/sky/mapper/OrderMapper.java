@@ -1,6 +1,7 @@
 package com.sky.mapper;
 
 import com.github.pagehelper.Page;
+import com.sky.dto.GoodsSalesDTO;
 import com.sky.dto.OrdersPageQueryDTO;
 import com.sky.entity.Orders;
 import org.apache.ibatis.annotations.Mapper;
@@ -9,6 +10,7 @@ import org.apache.ibatis.annotations.Update;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author xuxunne
@@ -61,4 +63,16 @@ public interface OrderMapper {
 
     @Select("select * from orders where status = #{status}  and order_time < #{orderCreateTime} ")
     List<Orders> getByStatusAndOrderTime(Integer status, LocalDateTime orderCreateTime);
+
+    Integer countByMap(Map map);
+///**
+// * Retrieves the top 10 best-selling goods within a specified time range.
+// * This method queries the order details and orders tables to calculate the total sales
+// * for each product, considering only completed orders (status = 5).
+// *
+/*  select od.name sum(od.number) number from order_details od, orders o where od.order_id = o.id
+    and o.status = 5 and o.order_ time > '2022-10-01' and o.order_time < '2022-10-31' group by od.name
+    order by number desc limit 10;
+    */
+    List<GoodsSalesDTO> getSalesTop10(LocalDateTime begin, LocalDateTime end);
 }
