@@ -64,7 +64,7 @@ public interface OrderMapper {
     @Select("select * from orders where status = #{status}  and order_time < #{orderCreateTime} ")
     List<Orders> getByStatusAndOrderTime(Integer status, LocalDateTime orderCreateTime);
 
-    Integer countByMap(Map map);
+
 ///**
 // * Retrieves the top 10 best-selling goods within a specified time range.
 // * This method queries the order details and orders tables to calculate the total sales
@@ -75,4 +75,17 @@ public interface OrderMapper {
     order by number desc limit 10;
     */
     List<GoodsSalesDTO> getSalesTop10(LocalDateTime begin, LocalDateTime end);
+
+    /**
+     * 根据条件统计套餐数量
+     * @param map
+     * @return
+     */
+    Integer countOrdersByMap(Map map);
+
+    Integer countByMap(Map map);
+
+    Double sumByMap(Map map);
+
 }
+

@@ -141,11 +141,11 @@ public class ReportServiceImpl implements ReportService {
             // query day order count  needed two parameter :begin and end
             map.put("end", endTime);
             map.put("begin", beginTime);
-            Integer dailyTotalOrder = orderMapper.countByMap(map);
+            Integer dailyTotalOrder = orderMapper.countOrdersByMap(map);
 
             // query day order count  needed two parameter :begin , end and status = 5
             map.put("status", Orders.COMPLETED);
-            Integer dailyValidOrder = orderMapper.countByMap(map);
+            Integer dailyValidOrder = orderMapper.countOrdersByMap(map);
 
             totalOrderList.add(dailyTotalOrder);
             totalValidList.add(dailyValidOrder);

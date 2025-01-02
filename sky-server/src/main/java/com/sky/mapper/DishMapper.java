@@ -13,6 +13,7 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface DishMapper {
@@ -67,4 +68,14 @@ public interface DishMapper {
 
     @Update("update dish set status = IF(status = 0, 1, 0) where id = #{id}")
     void onOff(Long id);
+
+    @Mapper
+
+        /**
+         * 根据条件统计菜品数量
+         * @param map
+         * @return
+         */
+        Integer countByMap(Map map);
+
 }
